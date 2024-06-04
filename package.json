@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-hw-01",
+  "name": "nodejs-hw-mongodb",
   "version": "1.0.0",
-  "description": "nodejs-hw-01",
+  "description": "nodejs-hw-mongodb",
   "type": "module",
   "main": "index.js",
   "scripts": {
