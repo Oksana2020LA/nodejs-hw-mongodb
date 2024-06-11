@@ -11,6 +11,7 @@ export const initMongoConnection = async () => {
 
     await mongoose.connect(
       `mongodb+srv://${user}:${pwd}@${url}/${db}?retryWrites=true&w=majority`,
+      // 'mongodb+srv://admin:admin@cluster.rgsdfcs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster',
     );
     console.log('Mongo connection successfully established!');
   } catch (e) {
