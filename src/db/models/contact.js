@@ -10,7 +10,8 @@ const contactsSchema = new Schema(
         phoneNumber: {
             type: String,
             required: true,
-        }, email: {
+        }, 
+        email: {
             type: String,
             lowercase: true,
             trim: true
@@ -25,17 +26,11 @@ const contactsSchema = new Schema(
             default: 'personal',
             required: true
         },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now
-        },
-    }, {
-    timestamps: true,
-}
+    },
+    {
+        timestamps: true,
+        versionKey: false,
+    },
 );
 
 export const ContactsCollection = model('contacts', contactsSchema);

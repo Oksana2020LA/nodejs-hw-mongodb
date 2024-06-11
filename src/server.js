@@ -24,7 +24,7 @@ export const setupServer = () => {
       });
     } catch (error) {
       res.status(500).json({
-        status: 'error',
+        status: '500',
         message: 'Failed to retrieve contacts',
         error: error.message,
       });
@@ -38,7 +38,7 @@ export const setupServer = () => {
 
       if (!contact) {
         return res.status(404).json({
-          status: 'error',
+          status: '404',
           message: 'Not found',
         });
       }
@@ -50,7 +50,7 @@ export const setupServer = () => {
       });
     } catch (error) {
       res.status(404).json({
-        status: 'error',
+        status: '404',
         message: 'Failed to retrieve contacts',
         error: error.message,
       });
@@ -67,11 +67,14 @@ export const setupServer = () => {
   );
 
   app.use('/', (req, res) => {
-    res.status(404).json({ message: 'Not found' });
+    res.status(404).json({ 
+      status: '404',
+      message: 'Not found' });
   });
 
   app.use((err, req, res) => {
     res.status(500).json({
+      status: '500',
       message: 'Something went wrong',
       error: err.message,
     });
