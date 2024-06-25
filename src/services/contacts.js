@@ -4,26 +4,26 @@ import { SORT_ORDER } from "../constans/index.js";
 import { parseIsFavourite } from "../utils/parseFilterParams.js";
 
 export const getAllContacts = async (page=1, perPage=10, sortBy = 'name', sortOrder = SORT_ORDER.ASC, filter = {}) => {
-   const limit = perPage;
-   const skip = (page - 1) * perPage;
+    const limit = perPage;
+    const skip = (page - 1) * perPage;
 
     let contactsQuery = ContactsCollection.find().skip(skip).limit(limit).sort({ [sortBy]: sortOrder });
-
-      if (filter.isFavourite !== undefined) {
+    
+    if (filter.isFavourite !== undefined) {
         const parsedIsFavourite = parseIsFavourite(filter.isFavourite);
         if (parsedIsFavourite !== undefined) {
             contactsQuery = contactsQuery.where('isFavourite').equals(parsedIsFavourite);
         }
     }
-
-  const contactsCount = await ContactsCollection.countDocuments();
-  const contacts = await contactsQuery.exec();
-  const paginationData = calculatePaginationData(contactsCount, limit, page);
-
-  return {
+    
+    const contactsCount = await ContactsCollection.countDocuments();
+    const contacts = await contactsQuery.exec();
+    const paginationData = calculatePaginationData(contactsCount, limit, page);
+    
+    return {
     data: contacts,
     ...paginationData,
-  };
+};
 };
 
 export const getContactsById = async (contactId) => {
