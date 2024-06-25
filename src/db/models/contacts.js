@@ -12,12 +12,18 @@ const contactsSchema = new Schema(
         },
     email: {
         type: String,
-        required: false,
+      required: false,
+        unique: true,
         },
     isFavourite: {
         type: Boolean,
         required: false,
         default: false,
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'users',
+      required: true,
     },
     contactType: {
       type: String,

@@ -11,4 +11,5 @@ export const createContactSchema = Joi.object({
   email: Joi.string().email(),
   contactType: Joi.string().valid("work", "home", "personal"),
   isFavourite: Joi.boolean(),
+  userId: Joi.string().required(),
 });
