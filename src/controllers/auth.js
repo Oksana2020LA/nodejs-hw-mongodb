@@ -7,7 +7,7 @@ import { refreshUsersSession } from '../services/auth.js';
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
 
-  res.json({
+  res.status(201).json({
     status: 201,
     message: 'Successfully registered a user!',
     data: user,
@@ -26,7 +26,7 @@ export const loginUserController = async (req, res) => {
     expires: new Date(Date.now() + ONE_DAY),
   });
 
-  res.json({
+  res.status(200).json({
     status: 200,
     message: 'Successfully logged in an user!',
     data: {
@@ -36,6 +36,8 @@ export const loginUserController = async (req, res) => {
 };
 
 export const logoutUserController = async (req, res) => {
+  console.log('Cookies received for logout:', req.cookies);
+
   if (req.cookies.sessionId) {
     await logoutUser(req.cookies.sessionId);
   }
@@ -65,7 +67,7 @@ export const refreshUserSessionController = async (req, res) => {
 
   setupSession(res, session);
 
-  res.json({
+  res.status(200).json({
     status: 200,
     message: 'Successfully refreshed a session!',
     data: {

@@ -12,9 +12,10 @@ const PORT = env.PORT || 3000;
 export const setupServer = () => {
 
     const app = express();
+app.use(cookieParser());
 
-    app.use(express.json({
-	type: ['application/json', 'application/vnd.api+json'],
+app.use(express.json({
+  type: ['application/json', 'application/vnd.api+json'],
 }));
     app.use(cors());
 
@@ -25,15 +26,12 @@ export const setupServer = () => {
     },
   }),
     );
-  app.use(router);
+    app.use(router);
 
     app.use('*', notFoundHandler);
-
     app.use(errorHandler);
 
-  app.use(cookieParser());
-
-      app.listen(PORT, () => {
+    app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
 
