@@ -1,4 +1,4 @@
-import { model } from 'mongoose';
+import { model, Schema } from 'mongoose';
 import { Schema } from 'mongoose';
 
 
@@ -17,4 +17,5 @@ usersSchema.methods.toJSON = function () {
   return obj;
 };
 
-export const User= model('users', usersSchema);
+const UserCollection= model('users', usersSchema);
+export default UsersCollection;
