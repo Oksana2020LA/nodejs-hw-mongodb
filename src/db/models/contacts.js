@@ -1,5 +1,4 @@
-import { model } from 'mongoose';
-import { Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 const contactsSchema = new Schema(
   {
@@ -10,30 +9,33 @@ const contactsSchema = new Schema(
     phoneNumber: {
       type: String,
       required: true,
-    },
-    email: { 
-      type: String, 
-      required: false 
-    },
+        },
+    email: {
+        type: String,
+      required: false,
+        unique: true,
+        },
     isFavourite: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        required: false,
+        default: false,
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'users',
+      required: true,
     },
     contactType: {
       type: String,
-      required: true,
-      enum: ['work', 'home', 'personal'],
+      required: false,
+        enum: ["work", "home", "personal"],
       default: 'personal',
     },
-    userId:{
-      type: Schema.Types.ObjectId,
-      ref: 'users', 
-      required: true,
-    }
   },
   {
     timestamps: true,
     versionKey: false,
   },
 );
+
 export const ContactsCollection = model('contacts', contactsSchema);
