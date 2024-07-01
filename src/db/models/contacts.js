@@ -9,28 +9,28 @@ const contactsSchema = new Schema(
     phoneNumber: {
       type: String,
       required: true,
-        },
+    },
     email: {
-        type: String,
+      type: String,
       required: false,
-        unique: true,
-        },
+      unique: true,
+    },
     isFavourite: {
-        type: Boolean,
-        required: false,
-        default: false,
+      type: Boolean,
+      required: false,
+      default: false,
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'users',
-      required: true,
     },
     contactType: {
       type: String,
       required: false,
-        enum: ["work", "home", "personal"],
+      enum: ['work', 'home', 'personal'],
       default: 'personal',
     },
+    photo: { type: String },
   },
   {
     timestamps: true,

@@ -1,17 +1,19 @@
 import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { SORT_ORDER } from '../constans/index.js';
+import { SORT_ORDER } from '../constants/index.js';
 
-export const getAllContacts = async ({ page,
+export const getAllContacts = async ({
+  page,
   perPage,
-sortOrder = SORT_ORDER.ASC,
+  sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
-userId, }) => {
+  userId,
+}) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = ContactsCollection.find({userId});
+  const contactsQuery = ContactsCollection.find({ userId });
 
   if (filter.contactType) {
     contactsQuery.where('contactType').equals(filter.contactType);
@@ -21,9 +23,7 @@ userId, }) => {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
 
-
-
-  const contactsCount = await ContactsCollection.find({userId})
+  const contactsCount = await ContactsCollection.find({ userId })
     .merge(contactsQuery)
     .countDocuments();
 
@@ -41,8 +41,6 @@ userId, }) => {
   };
 };
 
-
-
 export const getContactById = async (contactId, userId) => {
   const contact = await ContactsCollection.findOne({ _id: contactId, userId });
   return contact;
@@ -53,31 +51,35 @@ export const createContact = async (payload) => {
   return contact;
 };
 
-export const updateContact = async (contactId, userId, payload, options = {}) => {
-
-  try {const rawResult = await ContactsCollection.findOneAndUpdate(
+export const updateContact = async (
+  contactId,
+  userId,
+  payload,
+  options = {},
+) => {
+  payload.photo = options.photo;
+  try {
+    const rawResult = await ContactsCollection.findOneAndUpdate(
       { _id: contactId, userId },
       payload,
-    {
-      new: true,
-      includeResultMetadata: true,
-      ...options,
-    },
-  );
+      {
+        new: true,
+        includeResultMetadata: true,
+        ...options,
+      },
+    );
 
-
-
-  if (!rawResult || !rawResult.value) {
-
-    return null;
-  };
-
-  return {
-    contact: rawResult.value,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+    if (!rawResult || !rawResult.value) {
+      return null;
+    }
+    console.log('From db ********');
+    console.log(rawResult.value);
+    return {
+      contact: rawResult.value,
+      isNew: Boolean(rawResult?.lastErrorObject?.upserted),
     };
   } catch (error) {
-    console.error("Error during updateContact:", error);
+    console.error('Error during updateContact:', error);
     throw error;
   }
 };
