@@ -1,3 +1,3 @@
 nodejs-hw-mongodb
 
-- hw5-hw-mongodb
+- hw6-hw-mongodb
