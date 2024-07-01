@@ -1,39 +1,24 @@
-import { ContactsCollection } from '../db/models/contacts.js';
-import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { SORT_ORDER } from '../constans/index.js';
+import { ContactsCollection } from "../db/models/contact.js";
+import { calculatePaginationData } from "../utils/calculatePaginationData.js";
+import { SORT_ORDER } from "../constans/index.js";
+import { parseIsFavourite } from "../utils/parseFilterParams.js";
 
-export const getAllContacts = async ({ page,
-  perPage,
-sortOrder = SORT_ORDER.ASC,
-  sortBy = '_id',
-  filter = {},
-userId, }) => {
-  const limit = perPage;
-  const skip = (page - 1) * perPage;
+export const getAllContacts = async ( page=1, perPage=10, sortBy = 'name', sortOrder = SORT_ORDER.ASC, filter = {}, userId) => {
+   const limit = perPage;
+    const skip = (page - 1) * perPage;
 
-  const contactsQuery = ContactsCollection.find({userId});
+    let contactsQuery = ContactsCollection.find({userId}).skip(skip).limit(limit).sort({ [sortBy]: sortOrder });
 
-  if (filter.contactType) {
-    contactsQuery.where('contactType').equals(filter.contactType);
-  }
+      if (filter.isFavourite !== undefined) {
+        const parsedIsFavourite = parseIsFavourite(filter.isFavourite);
+        if (parsedIsFavourite !== undefined) {
+            contactsQuery = contactsQuery.where('isFavourite').equals(parsedIsFavourite);
+        }
+    }
 
-  if (filter.isFavourite) {
-    contactsQuery.where('isFavourite').equals(filter.isFavourite);
-  }
-
-
-
-  const contactsCount = await ContactsCollection.find({userId})
-    .merge(contactsQuery)
-    .countDocuments();
-
-  const contacts = await contactsQuery
-    .skip(skip)
-    .limit(limit)
-    .sort({ [sortBy]: sortOrder })
-    .exec();
-
-  const paginationData = calculatePaginationData(contactsCount, perPage, page);
+  const contactsCount = await ContactsCollection.countDocuments({userId});
+  const contacts = await contactsQuery.exec();
+  const paginationData = calculatePaginationData(contactsCount, limit, page);
 
   return {
     data: contacts,
@@ -41,52 +26,41 @@ userId, }) => {
   };
 };
 
-
-
-export const getContactById = async (contactId, userId) => {
+export const getContactsById = async (contactId, userId) => {
   const contact = await ContactsCollection.findOne({ _id: contactId, userId });
   return contact;
 };
 
-export const createContact = async (payload) => {
+export const createContacts = async (payload) => {
   const contact = await ContactsCollection.create(payload);
   return contact;
 };
 
-export const updateContact = async (contactId, userId, payload, options = {}) => {
 
- try {const rawResult = await ContactsCollection.findOneAndUpdate(
-    { _id: contactId, userId },
-     payload,
+export const deleteContact = async (contactId, userId) => {
+    const contact = await ContactsCollection.findOneAndDelete({
+      _id: contactId,
+      userId
+    });
+
+    return contact;
+};
+
+export const updateContact = async ( contactId,userId, payload, options = {}) => {
+  const rawResult = await ContactsCollection.findOneAndUpdate(
+    { _id: contactId, userId},
+    payload,
     {
       new: true,
       includeResultMetadata: true,
       ...options,
-    },
+    }
   );
 
-
-
-  if (!rawResult || !rawResult.value) {
-
-    return null;
-  };
+  if (!rawResult || !rawResult.value) return null;
 
   return {
     contact: rawResult.value,
     isNew: Boolean(rawResult?.lastErrorObject?.upserted),
-   };
- } catch(error) {
-    console.error("Error during updateContact:", error);
-    throw error;
-  }
-};
-
-export const deleteContact = async (contactId, userId) => {
-  const contact = await ContactsCollection.findOneAndDelete({
-    _id: contactId,
-    userId,
-  });
-
-  return contact;
+  };
 };

@@ -1,4 +1,5 @@
 import { SORT_ORDER } from "../constans/index.js";
+
 const parseSortOrder = (sortOrder) => {
   const isKnownOrder = [SORT_ORDER.ASC, SORT_ORDER.DESC].includes(sortOrder);
   if (isKnownOrder) return sortOrder;
@@ -16,8 +17,7 @@ const parseSortBy = (sortBy) => {
     'createdAt',
     'updatedAt',
   ];
-
-  if (keysOfContact.includes(sortBy)) {
+if (keysOfContact.includes(sortBy)) {
     return sortBy;
   }
 
