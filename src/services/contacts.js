@@ -55,9 +55,9 @@ export const createContact = async (payload) => {
 
 export const updateContact = async (contactId, userId, payload, options = {}) => {
 
- try {const rawResult = await ContactsCollection.findOneAndUpdate(
-    { _id: contactId, userId },
-     payload,
+  try {const rawResult = await ContactsCollection.findOneAndUpdate(
+      { _id: contactId, userId },
+      payload,
     {
       new: true,
       includeResultMetadata: true,
@@ -75,8 +75,8 @@ export const updateContact = async (contactId, userId, payload, options = {}) =>
   return {
     contact: rawResult.value,
     isNew: Boolean(rawResult?.lastErrorObject?.upserted),
-   };
- } catch(error) {
+    };
+  } catch (error) {
     console.error("Error during updateContact:", error);
     throw error;
   }
