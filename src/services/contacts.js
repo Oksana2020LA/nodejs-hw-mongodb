@@ -12,7 +12,7 @@ export const getAllContacts = async ({
   filter = {},
   userId,
 }) => {
-
+  // пагінація
   const limit = perPage;
   const skip = (page - 1) * perPage;
 

@@ -18,7 +18,6 @@ export const registerUserSchema = Joi.object({
   }),
 });
 
-
 export const loginUserSchema = Joi.object({
   email: Joi.string().email().required().messages({
     'string.base': 'Email should be a string',
@@ -38,4 +37,8 @@ export const requestResetEmailSchema = Joi.object({
 export const resetPasswordSchema = Joi.object({
   password: Joi.string().required(),
   token: Joi.string().required(),
+});
+
+export const loginWithGoogleOAuthSchema = Joi.object({
+  code: Joi.string().required(),
 });

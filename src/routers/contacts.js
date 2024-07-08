@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import {
     getContactsController,
     getContactByIdController,
@@ -6,11 +7,17 @@ import {
     deleteContactController,
     patchContactController,
 } from '../controllers/contacts.js';
+
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+
 import { validateBody } from '../middlewares/validateBody.js';
+
 import { createContactSchema, updateContactSchema } from '../validation/contacts.js';
+
 import { isValidId } from '../middlewares/isValidId.js';
+
 import { authenticate } from '../middlewares/authenticate.js';
+
 import { upload } from '../middlewares/multer.js';
 
 
@@ -41,9 +48,9 @@ router.patch(
     ctrlWrapper(patchContactController),
 );
 
-router.delete('/:contactId',
+router.delete(
+    '/:contactId',
     isValidId,
-    ctrlWrapper(deleteContactController),
-);
+    ctrlWrapper(deleteContactController));
 
 export default router;

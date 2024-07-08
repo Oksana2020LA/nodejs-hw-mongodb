@@ -14,6 +14,8 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 
+import { getFullNameFromGoogleTokenPayload, validateCode } from '../utils/googleOAuth2.js';
+
 
 export const registerUser = async (userData) => {
   const user = await User.findOne({ email: userData.email });
@@ -32,7 +34,8 @@ export const loginUser = async (userData) => {
   if (!user) {
     throw createHttpError(401, 'Unauthorized');
   }
-  const isEqual = await bcrypt.compare(userData.password, user.password);
+  const isEqual = await bcrypt.compare(userData.password, user.password); // Порівнюємо хеші паролів
+
   if (!isEqual) {
     throw createHttpError(401, 'Unauthorized');
   }
@@ -129,8 +132,8 @@ export const requestResetToken = async (email) => {
     await sendEmail({
     from: env(SMTP.SMTP_FROM),
     to: email,
-      subject: 'Reset your password',
-      html,
+    subject: 'Reset your password',
+    html,
   });
   } catch (error) {
     console.log(error);
@@ -163,4 +166,29 @@ export const resetPassword = async (payload) => {
     { _id: user._id },
     { password: encryptedPassword },
   );
+};
+
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  if (!payload) throw createHttpError(401);
+
+  let user = await User.findOne({ email: payload.email });
+  if (!user) {
+    const password = await bcrypt.hash(randomBytes(10), 10);
+    user = await User.create({
+      email: payload.email,
+      name: getFullNameFromGoogleTokenPayload(payload),
+      password,
+    });
+  }
+
+  const newSession = createSession();
+
+  await Session.deleteOne({ userId: user._id });
+
+  return await Session.create({
+    userId: user._id,
+    ...newSession,
+  });
 };

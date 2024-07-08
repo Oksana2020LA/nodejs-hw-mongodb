@@ -7,7 +7,6 @@ import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import { env } from '../utils/env.js';
 
-
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
@@ -30,13 +29,14 @@ export const getContactsController = async (req, res) => {
     });
 };
 
-
 export const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
   const userId = req.user._id;
 
   const contact = await getContactById(contactId, userId);
+  	// Додаємо базову обробку помилки
   if (!contact) {
+    // 2. Створюємо та налаштовуємо помилку
     next(createHttpError(404, 'Contact not found'));
     return;
   }
@@ -49,7 +49,6 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res) => {
-  
   const photo = req.file;
 
   let url;
@@ -78,13 +77,14 @@ export const deleteContactController = async (req, res, next) => {
   const contact = await deleteContact(contactId, userId);
 
   if (!contact) {
-  
+
     next(createHttpError(404, 'Contact not found'));
     return;
   }
 
   res.sendStatus(204);
 };
+
 
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
@@ -94,7 +94,7 @@ export const patchContactController = async (req, res, next) => {
 
     let url;
 
-  if (photo) {
+if (photo) {
     if (env('ENABLE_CLOUDINARY') === 'true') {
       url = await saveFileToCloudinary(photo);
     } else {

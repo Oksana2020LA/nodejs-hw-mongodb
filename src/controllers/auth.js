@@ -1,6 +1,7 @@
 // import { ONE_DAY } from '../constants/index.js';
 import { THIRTY_DAY } from "../constants/index.js";
 
+import { loginOrSignupWithGoogle } from '../services/auth.js';
 import { loginUser } from '../services/auth.js';
 import { logoutUser } from '../services/auth.js';
 import { refreshUsersSession } from '../services/auth.js';
@@ -44,7 +45,6 @@ export const loginUserController = async (req, res) => {
   });
 };
 
-
 export const logoutUserController = async (req, res) => {
   if (req.cookies.sessionId) {
     await logoutUser(req.cookies.sessionId);
@@ -55,7 +55,6 @@ export const logoutUserController = async (req, res) => {
 
   res.status(204).send();
 };
-
 
 export const refreshUserSessionController = async (req, res) => {
   const session = await refreshUsersSession({
@@ -89,5 +88,30 @@ export const resetPasswordController = async (req, res) => {
     message: 'Password was successfully reset!',
     status: 200,
     data: {},
+  });
+};
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+  res.json({
+    status: 200,
+    message: 'Successfully get Google OAuth url!',
+    data: {
+      url,
+    },
+  });
+};
+
+export const loginWithGoogleController = async (req, res) => {
+  const session = await loginOrSignupWithGoogle(req.body.code);
+  
+  setupCookiesSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully logged in via Google OAuth!',
+    data: {
+      accessToken: session.accessToken,
+    },
   });
 };
