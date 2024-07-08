@@ -21,7 +21,6 @@
     "pino-pretty": "^11.2.0"
   },
   "dependencies": {
-    "@faker-js/faker": "^8.4.1",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.2.0",
     "cookie-parser": "^1.4.6",
@@ -32,10 +31,8 @@
     "http-errors": "^2.0.0",
     "joi": "^17.13.1",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.7.0",
     "mongoose": "^8.4.1",
     "multer": "^1.4.5-lts.1",
-    "node": "^20.15.0",
     "nodemailer": "^6.9.14",
     "pino-http": "^10.1.0"
   }
